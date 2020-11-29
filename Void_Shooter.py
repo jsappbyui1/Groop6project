@@ -119,7 +119,6 @@ class Test:
     pass
 
 
-
 def main():
     window = Game()
     window.setup()
