@@ -115,6 +115,10 @@ class Player(arcade.Sprite):
             self.top  =SCREEN_HEIGHT - 1
 
 
+class Test:
+    pass
+
+
 def main():
     window = Game()
     window.setup()
