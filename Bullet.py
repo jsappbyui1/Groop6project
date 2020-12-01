@@ -37,28 +37,3 @@ class Bullet(arcade.window):
 
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
-
-    def on_update(self, delta_time):
-        """ Movement and game logic """
-
-        # Call update on all sprites
-        self.bullet_list.update()
-
-        # Loop through each bullet
-        for bullet in self.bullet_list:
-
-            # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
-
-            # If it did, get rid of the bullet
-            if len(hit_list) > 0:
-                bullet.remove_from_sprite_lists()
-
-            # For every coin we hit, add to the score and remove the coin
-            for coin in hit_list:
-                coin.remove_from_sprite_lists()
-                self.score += 1
-
-            # If the bullet flies off-screen, remove it.
-            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
-                bullet.remove_from_sprite_lists()
