@@ -18,11 +18,12 @@ class Game (arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         
         # Set background color.
-        arcade.set_background_color(arcade.csscolor.CRIMSON)
+        arcade.set_background_color(arcade.csscolor.BLACK)
 
         # variables that hold sprite lists initialization
         self.player_list = None
         self.bullet_list = None
+        self.boss_list = None
         
         # player info initialization
         self.player_sprite = None
@@ -115,7 +116,7 @@ class Player(arcade.Sprite):
             self.top  =SCREEN_HEIGHT - 1
 
 
-class Test:
+class BadguySprite(arcade.Sprite):
     pass
 
 
