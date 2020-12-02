@@ -82,10 +82,7 @@ class Game (arcade.Window):
         
         # Call update to move the sprite
         self.player_list.update()
-        self.boss.update(self.player_sprite)
-
-        
-
+        self.boss.update(self.frame_count,self.player_sprite)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""
@@ -132,45 +129,71 @@ class Player(arcade.Sprite):
 class Boss(arcade.Sprite):
 
     def __init__(self):
-        self.boss_list = None
         self.boss_sprite = None
+        self.cycleLen = 100
 
     def settup(self):
-        self.boss_list = arcade.SpriteList()
-        boss = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.75)
-        boss.center_x = 500
-        boss.center_y = SCREEN_HEIGHT - (boss.height / 8)
-        boss.angle = 180
-        self.boss_list.append(boss)
+        self.boss_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.75)
+        self.boss_sprite.center_x = 500
+        self.boss_sprite.center_y = SCREEN_HEIGHT - (self.boss_sprite.height / 8)
+        self.boss_sprite.angle = 180
+        
 
-    def update(self,player):
+    def update(self,timer,player):
+        self.timer = timer
         self.player_sprite = player
-        for boss in self.boss_list:
-            # First, calculate the angle to the player. We could do this
-            # only when the bullet fires, but in this case we will rotate
-            # the boss to face the player each frame, so we'll do this
-            # each frame.
 
-            # Position the start at the boss's current location
-            start_x = boss.center_x
-            start_y = boss.center_y
+        if self.timer % self.cycleLen == 0:
+            self.chooseLocation()
+            self.chooseAttack()
+            #self.attack()
+            if self.cycleLen > 100:
+                self.cycleLen -= 100
+                print(f"cycle lengnth is {self.cycleLen}")
 
-            # Get the destination location for the bullet
-            dest_x = self.player_sprite.center_x
-            dest_y = self.player_sprite.center_y
+    def aimAtPlayer(self):
+        #aims the boss sprite at the player
 
-            # Do math to calculate how to get the bullet to the destination.
-            # Calculation the angle in radians between the start points
-            # and end points. This is the angle the bullet will travel.
-            x_diff = dest_x - start_x
-            y_diff = dest_y - start_y
-            angle = math.atan2(y_diff, x_diff)
+        start_x = self.boss_sprite.center_x  #   <-- identifies boss's x position
+        start_y = self.boss_sprite.center_y  #   <-- identifies boss's y position
 
-            # Set the boss to face the player.
-            boss.angle = math.degrees(angle)-90
+        dest_x = self.player_sprite.center_x #   <-- identifies player's x position
+        dest_y = self.player_sprite.center_y #   <-- identifies player's y position
+
+        x_diff = dest_x - start_x            #   <-- compares the two x positions
+        y_diff = dest_y - start_y            #   <-- compares the two y positions
+        angle = math.atan2(y_diff, x_diff)   #   <-- calculates the angle difference
+
+        self.boss_sprite.angle = math.degrees(angle)-90 #   <-- sets the boss's new faceing
+
+    def chooseAttack(self):
+        pass
+
+    def chooseLocation(self):
+        choiceList = ['top','left','right','bottom']
+        choice = random.choice(choiceList)
+        if choice == 'top':
+            print("boss going to top")
+            self.boss_sprite.center_x = SCREEN_WIDTH/2
+            self.boss_sprite.center_y = SCREEN_HEIGHT - (self.boss_sprite.height / 8)
+        if choice == 'left':
+            print("boss going to left")
+            self.boss_sprite.center_x = (self.boss_sprite.width / 8)
+            self.boss_sprite.center_y = SCREEN_HEIGHT/2
+        if choice == 'right':
+            print("boss going to right")
+            self.boss_sprite.center_x = SCREEN_WIDTH - (self.boss_sprite.width / 8)
+            self.boss_sprite.center_y = SCREEN_HEIGHT/2 
+        if choice == 'bottom':
+            print("boss going to bottom")
+            self.boss_sprite.center_x = SCREEN_WIDTH/2
+            self.boss_sprite.center_y = (self.boss_sprite.height / 8)
 
     def draw(self):
-        self.boss_list.draw()
+        self.boss_sprite.draw()
+
+    def attack(self, pattern):
+        pass
 
 
 def main():
