@@ -43,19 +43,19 @@ class Game (arcade.Window):
     def setup(self):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
-        self.enemy_list = arcade.SpriteList()
+        self.boss_list = arcade.SpriteList()
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
         self.player_sprite.center_x = 500
         self.player_sprite.center_y = 500
         self.player_list.append(self.player_sprite)
 
-        # Add top-left enemy ship
-        enemy = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
-        enemy.center_x = 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
-        enemy.angle = 180
-        self.enemy_list.append(enemy)
+        # Add top-left boss ship
+        boss = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
+        boss.center_x = 120
+        boss.center_y = SCREEN_HEIGHT - boss.height
+        boss.angle = 180
+        self.boss_list.append(boss)
 
     def on_draw(self):
         """Render the Screen"""
@@ -63,7 +63,7 @@ class Game (arcade.Window):
         arcade.start_render()
        
         # Draw all the sprites
-        self.enemy_list.draw()
+        self.boss_list.draw()
         
         self.player_list.draw()
 
@@ -88,16 +88,16 @@ class Game (arcade.Window):
         # Call update to move the sprite
         self.player_list.update()
 
-        for enemy in self.enemy_list:
+        for boss in self.boss_list:
 
             # First, calculate the angle to the player. We could do this
             # only when the bullet fires, but in this case we will rotate
-            # the enemy to face the player each frame, so we'll do this
+            # the boss to face the player each frame, so we'll do this
             # each frame.
 
-            # Position the start at the enemy's current location
-            start_x = enemy.center_x
-            start_y = enemy.center_y
+            # Position the start at the boss's current location
+            start_x = boss.center_x
+            start_y = boss.center_y
 
             # Get the destination location for the bullet
             dest_x = self.player_sprite.center_x
@@ -110,8 +110,8 @@ class Game (arcade.Window):
             y_diff = dest_y - start_y
             angle = math.atan2(y_diff, x_diff)
 
-            # Set the enemy to face the player.
-            enemy.angle = math.degrees(angle)-90
+            # Set the boss to face the player.
+            boss.angle = math.degrees(angle)-90
 
 
     def on_key_press(self, key, modifiers):
