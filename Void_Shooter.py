@@ -51,9 +51,9 @@ class Game (arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Add top-left boss ship
-        boss = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
-        boss.center_x = 120
-        boss.center_y = SCREEN_HEIGHT - boss.height
+        boss = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.75)
+        boss.center_x = 500
+        boss.center_y = SCREEN_HEIGHT - (boss.height / 8)
         boss.angle = 180
         self.boss_list.append(boss)
 
