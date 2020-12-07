@@ -107,7 +107,6 @@ class Game (arcade.Window):
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
 
-
 class Player(arcade.Sprite):
     
     def update(self):
@@ -142,11 +141,13 @@ class Boss(arcade.Sprite):
     def update(self,timer,player):
         self.timer = timer
         self.player_sprite = player
-
+        self.aimAtPlayer()
         if self.timer % self.cycleLen == 0:
             self.chooseLocation()
+            
             self.chooseAttack()
-            #self.attack()
+            #pattern = self.attack()
+            #self.attack(pattern)
             if self.cycleLen > 100:
                 self.cycleLen -= 100
                 print(f"cycle lengnth is {self.cycleLen}")
@@ -167,7 +168,14 @@ class Boss(arcade.Sprite):
         self.boss_sprite.angle = math.degrees(angle)-90 #   <-- sets the boss's new faceing
 
     def chooseAttack(self):
-        pass
+        choiceList = ['basic','split','random']
+        choice = random.choice(choiceList)
+        if choice == 'basic':
+            print("basic attack")
+        if choice == 'split':
+            print("split attack")
+        if choice == 'random':
+            print("ranodm attack")
 
     def chooseLocation(self):
         choiceList = ['top','left','right','bottom']
@@ -195,12 +203,10 @@ class Boss(arcade.Sprite):
     def attack(self, pattern):
         pass
 
-
 def main():
     window = Game()
     window.setup()
     arcade.run()
-
 
 if __name__ == "__main__":
     main()
