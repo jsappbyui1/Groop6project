@@ -116,6 +116,29 @@ class Game (arcade.Window):
             self.left_pressed = False
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
+            
+    def on_mouse_press(self, x, y, button, modifiers):
+
+        # Position the bullet at the player's current location
+        start_x = self.player.center_x
+        start_y = self.player.center_y
+
+        # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrolling screen, you will also need
+        # to add in self.view_bottom and self.view_left.
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+        
+        self.bullet.createBullet(start_x, start_y, angle)
+
+        self.bullet.update(self.enemy_list)
 
 class Player(arcade.Sprite):
     
