@@ -62,7 +62,6 @@ class Game (arcade.Window):
         self.boss.draw()
         self.player_list.draw()
 
-
     def on_update(self, detla_time):
         """Movement and game logic"""
         # Calculate speed based on keys pressed
@@ -123,13 +122,17 @@ class Player(arcade.Sprite):
         if self.bottom < 0:
             self.bottom = 0
         elif self.top > SCREEN_HEIGHT - 1:
-            self.top  =SCREEN_HEIGHT - 1
+            self.top  = SCREEN_HEIGHT - 1
 
 class Boss(arcade.Sprite):
 
     def __init__(self):
+        #self.bullet = Bullet()
         self.boss_sprite = None
         self.cycleLen = 100
+        self.attackFrame = (self.cycleLen/10)
+        self.attackPattern = self.chooseAttack()
+        self.attackCount= 0
 
     def settup(self):
         self.boss_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.75)
@@ -137,20 +140,20 @@ class Boss(arcade.Sprite):
         self.boss_sprite.center_y = SCREEN_HEIGHT - (self.boss_sprite.height / 8)
         self.boss_sprite.angle = 180
         
-
     def update(self,timer,player):
         self.timer = timer
         self.player_sprite = player
         self.aimAtPlayer()
         if self.timer % self.cycleLen == 0:
             self.chooseLocation()
-            
-            self.chooseAttack()
-            #pattern = self.attack()
-            #self.attack(pattern)
-            if self.cycleLen > 100:
-                self.cycleLen -= 100
-                print(f"cycle lengnth is {self.cycleLen}")
+            self.attackPattern = self.chooseAttack()
+            self.attackCount = 0
+        if self.timer % self.attackFrame == 0:
+            self.attack(self.attackPattern, self.attackCount)
+            self.attackCount += 1
+        if self.cycleLen > 100:
+            self.cycleLen -= 100
+            print(f"cycle lengnth is {self.cycleLen}")
 
     def aimAtPlayer(self):
         #aims the boss sprite at the player
@@ -168,14 +171,19 @@ class Boss(arcade.Sprite):
         self.boss_sprite.angle = math.degrees(angle)-90 #   <-- sets the boss's new faceing
 
     def chooseAttack(self):
-        choiceList = ['basic','split','random']
+        attackList = []
+        choiceList = ['basic','tripple','spray']
         choice = random.choice(choiceList)
         if choice == 'basic':
-            print("basic attack")
-        if choice == 'split':
-            print("split attack")
-        if choice == 'random':
-            print("ranodm attack")
+            attackList = ["basic attack 1","basic attack 2","basic attack 3","basic attack 4","basic attack 5"
+            ,"basic attack 6","basic attack 7","basic attack 8","basic attack 9","basic attack 10"]
+        if choice == 'tripple':
+            attackList = ["tripple attack 1","tripple attack 2","tripple attack 3","tripple attack 4","tripple attack 5"
+            ,"tripple attack 6","tripple attack 7","tripple attack 8","tripple attack 9","tripple attack 10"]
+        if choice == 'spray':
+            attackList = ["spray attack 1","spray attack 2","spray attack 3","spray attack 4","spray attack 5"
+            ,"spray attack 6","spray attack 7","spray attack 8","spray attack 9","spray attack 10"]
+        return(attackList)
 
     def chooseLocation(self):
         choiceList = ['top','left','right','bottom']
@@ -200,8 +208,8 @@ class Boss(arcade.Sprite):
     def draw(self):
         self.boss_sprite.draw()
 
-    def attack(self, pattern):
-        pass
+    def attack(self, pattern,count):
+        print(self.attackPattern[count])
 
 def main():
     window = Game()
