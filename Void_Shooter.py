@@ -3,13 +3,18 @@
 import random
 import arcade
 import math
+import os
 
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 SCREEN_TITLE = "Void Shooter"
 
+SPRITE_SCALING_LASER = 0.8
+
 MOVEMENT_SPEED = 5
+BULLET_SPEED = 5
+
 
 class Game (arcade.Window):
 
