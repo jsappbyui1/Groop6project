@@ -15,6 +15,7 @@ class Game (arcade.Window):
 
     def __init__(self):
         self.boss = Boss()
+        self.bullet = Bullet()
         self.frame_count = 0
 
         # Call parent class and set up the window, probably from the arcade library.
@@ -43,7 +44,7 @@ class Game (arcade.Window):
     def setup(self):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
-        
+        self.bullet.setup()
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
         self.player_sprite.center_x = 500
@@ -82,6 +83,7 @@ class Game (arcade.Window):
         # Call update to move the sprite
         self.player_list.update()
         self.boss.update(self.frame_count,self.player_sprite)
+        self.bullet.update(self.player_sprite)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""
@@ -210,6 +212,52 @@ class Boss(arcade.Sprite):
 
     def attack(self, pattern,count):
         print(self.attackPattern[count])
+
+class Bullet(arcade.Sprite):
+
+    def __init__(self):
+        self.bullet_list = None
+
+    def setup(self):
+        self.bullet_list = arcade.SpriteList()
+
+    def createBullet(self,start_x,start_y,angle,speed):
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
+        bullet.center_x = start_x
+        bullet.center_y = start_y
+        # Angle the bullet sprite
+        bullet.angle = math.degrees(angle)
+        
+        # Taking into account the angle, calculate our change_x
+        # and change_y. Velocity is how fast the bullet travels.
+        bullet.change_x = math.cos(angle) * speed
+        bullet.change_y = math.sin(angle) * speed
+        
+        self.bullet_list.append(bullet)
+
+    def update(self,player):
+        # Get rid of the bullet when it flies off-screen
+        for bullet in self.bullet_list:
+            if bullet.top < 0:
+                bullet.remove_from_sprite_lists()
+                        # Check this bullet to see if it hit a coin
+            hit_list = arcade.check_for_collision_with_list(bullet, player)
+
+            # If it did, get rid of the bullet
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+            #self.score += 1 # <-- For every coin we hit, add to the score and remove the coin
+
+            # If the bullet flies off-screen, remove it.
+            if bullet.bottom > SCREEN_HEIGHT:
+                bullet.remove_from_sprite_lists()
+
+        self.bullet_list.update()
+    
+    def draw(self):
+        self.bullet_list.draw()
+
+
 
 def main():
     window = Game()
