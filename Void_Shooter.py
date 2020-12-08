@@ -13,7 +13,7 @@ SCREEN_TITLE = "Void Shooter"
 SPRITE_SCALING_LASER = 0.8
 
 MOVEMENT_SPEED = 5
-BULLET_SPEED = 5
+BULLET_SPEED = 4
 
 
 class Game (arcade.Window):
@@ -30,7 +30,7 @@ class Game (arcade.Window):
 
         # variables that hold sprite lists initialization
         self.player_list = None
-        self.bullet_list = None
+        self.bullet = Bullet()
         
         # player info initialization
         self.player_sprite = None
@@ -51,7 +51,7 @@ class Game (arcade.Window):
     def setup(self):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
-        self.bullet_list = arcade.SpriteList()
+        self.bullet.setup()
 
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
@@ -70,7 +70,7 @@ class Game (arcade.Window):
         
         self.boss.draw()
         self.player_list.draw()
-        self.bullet_list.draw()
+        self.bullet.draw()
 
 
     def on_update(self, detla_time):
