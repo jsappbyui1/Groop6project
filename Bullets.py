@@ -26,16 +26,16 @@ class Bullet(arcade.Sprite):
         
         self.bullet_list.append(bullet)
 
-    def update(self,target):
+    def update(self,enemy,player):
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
                         # Check this bullet to see if it hit a coin
             if(bullet.owner == """player"""):
-                hit_list = arcade.check_for_collision_with_list(bullet, target)
+                hit_list = arcade.check_for_collision_with_list(bullet, enemy)
             else:
-                hit_list = arcade.check_for_collision_with_list(bullet, target)
+                hit_list = arcade.check_for_collision_with_list(bullet, player)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
