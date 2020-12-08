@@ -1,14 +1,18 @@
+
 class Bullet():
     """ Bullet """
     def __init__(self):
         self.bullet_list = None
 
-    def create_bullet(start_x, start_y, end_x, end_y):
+    def create_player_bullet(start_x, start_y, end_x, end_y):
         """ Called whenever the mouse button is clicked. """
         mygame = MyGame()
 
         # Create a bullet
         bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
+
+        # Set Owner
+        
 
         # Position the bullet at the player's current location
         bullet.center_x = start_x
@@ -51,17 +55,16 @@ class Bullet():
         for bullet in mygame.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, mygame.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, mygame.boss)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
                 bullet.remove_from_sprite_lists()
 
-            # For every coin we hit, add to the score and remove the coin
+            # For every hit, add to the score
             for coin in hit_list:
-                coin.remove_from_sprite_lists()
                 self.score += 1
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
+            if bullet.bottom > mygame.width or bullet.top < 0 or bullet.right < 0 or bullet.left > mygame.width:
                 bullet.remove_from_sprite_lists()
