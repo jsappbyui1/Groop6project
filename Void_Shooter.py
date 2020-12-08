@@ -25,11 +25,14 @@ class Game (arcade.Window):
 
         # variables that hold sprite lists initialization
         self.player_list = None
-        
+        self.bullet_list = None
         
         # player info initialization
         self.player_sprite = None
         
+        #Sounds
+        self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser1.wav")
+        self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
 
         # Track current state of what key is pressed
         self.left_pressed = False
@@ -43,7 +46,8 @@ class Game (arcade.Window):
     def setup(self):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
-        
+        self.bullet_list = arcade.SpriteList()
+
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
         self.player_sprite.center_x = 500
@@ -61,6 +65,7 @@ class Game (arcade.Window):
         
         self.boss.draw()
         self.player_list.draw()
+        self.bullet_list.draw()
 
 
     def on_update(self, detla_time):
