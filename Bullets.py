@@ -8,12 +8,16 @@ class Bullet(arcade.Sprite):
     def setup(self):
         self.bullet_list = arcade.SpriteList()
 
-    def createBullet(self,start_x,start_y,angle):
+    def createBullet(self,start_x,start_y,angle,owner):
+
         bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
         bullet.center_x = start_x
         bullet.center_y = start_y
         # Angle the bullet sprite
         bullet.angle = math.degrees(angle)
+
+        #Owner
+        bullet.owner = owner
 
         # Taking into account the angle, calculate our change_x
         # and change_y. Velocity is how fast the bullet travels.
@@ -28,7 +32,10 @@ class Bullet(arcade.Sprite):
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
                         # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, target)
+            if(bullet.owner == """player"""):
+                hit_list = arcade.check_for_collision_with_list(bullet, target)
+            else:
+                hit_list = arcade.check_for_collision_with_list(bullet, target)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
