@@ -20,6 +20,7 @@ class Game (arcade.Window):
 
     def __init__(self):
         self.boss = Boss()
+        self.bullet = Bullet()
         self.frame_count = 0
 
         # Call parent class and set up the window, probably from the arcade library.
@@ -30,7 +31,6 @@ class Game (arcade.Window):
 
         # variables that hold sprite lists initialization
         self.player_list = None
-        self.bullet = Bullet()
         
         # player info initialization
         self.player_sprite = None
@@ -51,7 +51,6 @@ class Game (arcade.Window):
     def setup(self):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
-        self.bullet.setup()
 
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
@@ -60,6 +59,7 @@ class Game (arcade.Window):
         self.player_list.append(self.player_sprite)
 
         self.boss.settup()
+        self.bullet.setup()
 
     def on_draw(self):
         """Render the Screen"""
@@ -93,6 +93,7 @@ class Game (arcade.Window):
         # Call update to move the sprite
         self.player_list.update()
         self.boss.update(self.frame_count,self.player_sprite)
+        self.bullet.update(self.enemy_list,self.player_list)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""
@@ -118,6 +119,9 @@ class Game (arcade.Window):
             self.right_pressed = False
             
     def on_mouse_press(self, x, y, button, modifiers):
+        
+        #Set Owner
+        owner = """player"""
 
         # Position the bullet at the player's current location
         start_x = self.player.center_x
@@ -136,9 +140,7 @@ class Game (arcade.Window):
         y_diff = dest_y - start_y
         angle = math.atan2(y_diff, x_diff)
         
-        self.bullet.createBullet(start_x, start_y, angle)
-
-        self.bullet.update(self.enemy_list)
+        self.bullet.createBullet(start_x, start_y, angle, owner)
 
 class Player(arcade.Sprite):
     
