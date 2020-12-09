@@ -19,6 +19,7 @@ BULLET_SPEED = 4
 class Game (arcade.Window):
 
     def __init__(self):
+        self.bullet = Bullet()
         self.boss = Boss()
         self.bullet = Bullet()
         self.frame_count = 0
@@ -31,6 +32,8 @@ class Game (arcade.Window):
 
         # variables that hold sprite lists initialization
         self.player_list = None
+        self.boss_sprite = self.boss.boss_sprite
+
         
         # player info initialization
         self.player_sprite = None
@@ -51,6 +54,7 @@ class Game (arcade.Window):
     def setup(self):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
+        self.bullet.setup()
 
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
@@ -68,10 +72,10 @@ class Game (arcade.Window):
        
         # Draw all the sprites
         
+        self.bullet.draw()
         self.boss.draw()
         self.player_list.draw()
         self.bullet.draw()
-
 
     def on_update(self, detla_time):
         """Movement and game logic"""
@@ -92,6 +96,7 @@ class Game (arcade.Window):
         
         # Call update to move the sprite
         self.player_list.update()
+        self.bullet.update(self.boss_sprite,self.player_sprite)
         self.boss.update(self.frame_count,self.player_sprite)
         self.bullet.update(self.enemy_list,self.player_list)
 
@@ -158,13 +163,17 @@ class Player(arcade.Sprite):
         if self.bottom < 0:
             self.bottom = 0
         elif self.top > SCREEN_HEIGHT - 1:
-            self.top  =SCREEN_HEIGHT - 1
+            self.top  = SCREEN_HEIGHT - 1
 
 class Boss(arcade.Sprite):
 
     def __init__(self):
+        self.bullet = Bullet()
         self.boss_sprite = None
         self.cycleLen = 100
+        self.attackFrame = (self.cycleLen/10)
+        self.attackPattern = self.chooseAttack()
+        self.attackCount= 0
 
     def settup(self):
         self.boss_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.75)
@@ -172,20 +181,21 @@ class Boss(arcade.Sprite):
         self.boss_sprite.center_y = SCREEN_HEIGHT - (self.boss_sprite.height / 8)
         self.boss_sprite.angle = 180
         
-
     def update(self,timer,player):
         self.timer = timer
         self.player_sprite = player
         self.aimAtPlayer()
         if self.timer % self.cycleLen == 0:
             self.chooseLocation()
-            
-            self.chooseAttack()
-            #pattern = self.attack()
-            #self.attack(pattern)
-            if self.cycleLen > 100:
-                self.cycleLen -= 100
-                print(f"cycle lengnth is {self.cycleLen}")
+            self.attackPattern = self.chooseAttack()
+            self.attackCount = 0
+        if self.timer % self.attackFrame == 0:
+            self.attack(self.attackPattern, self.attackCount)
+            self.attackCount += 1
+            print(f"attack {self.attackCount}")
+        if self.cycleLen > 100:
+            self.cycleLen -= 100
+            print(f"cycle lengnth is {self.cycleLen}")
 
     def aimAtPlayer(self):
         #aims the boss sprite at the player
@@ -203,14 +213,19 @@ class Boss(arcade.Sprite):
         self.boss_sprite.angle = math.degrees(angle)-90 #   <-- sets the boss's new faceing
 
     def chooseAttack(self):
-        choiceList = ['basic','split','random']
+        attackList = []
+        choiceList = ['basic','tripple','spray']
         choice = random.choice(choiceList)
         if choice == 'basic':
-            print("basic attack")
-        if choice == 'split':
-            print("split attack")
-        if choice == 'random':
-            print("ranodm attack")
+            attackList = ["basic attack","basic attack","basic attack","basic attack","basic attack"
+            ,"basic attack","basic attack","basic attack","basic attack","basic attack"]
+        if choice == 'tripple':
+            attackList = ["tripple attack","tripple attack","tripple attack","tripple attack","tripple attack"
+            ,"tripple attack","tripple attack","tripple attack","tripple attack","tripple attack"]
+        if choice == 'spray':
+            attackList = ["spray attack","spray attack","spray attack","spray attack","spray attack"
+            ,"spray attack","spray attack","spray attack","spray attack","spray attack"]
+        return(attackList)
 
     def chooseLocation(self):
         choiceList = ['top','left','right','bottom']
@@ -235,8 +250,73 @@ class Boss(arcade.Sprite):
     def draw(self):
         self.boss_sprite.draw()
 
-    def attack(self, pattern):
-        pass
+    def attack(self, pattern,count):
+        attack = pattern[count]
+        print(attack)
+        if attack == 'basic attack':
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,self.boss_sprite.angle,'badguy',2)
+        if attack == 'tripple attack':
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,self.boss_sprite.angle, 'badguy',2)
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,(self.boss_sprite.angle + .25),'badguy',2)
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,(self.boss_sprite.angle - .25),'badguy',2)
+        if attack == 'spray attack':
+            x = 10
+            while x >= 0:
+                scew = random.uniform(-1, 1)
+                self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,(self.boss_sprite.angle + scew),'badguy',2)
+                x -= 1
+
+class Bullet(arcade.Sprite):
+
+    def __init__(self):
+        self.bullet_list = None
+
+    def setup(self):
+        self.bullet_list = arcade.SpriteList()
+
+    def createBullet(self,start_x,start_y,angle,owner,speed):
+
+        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
+        bullet.center_x = start_x
+        bullet.center_y = start_y
+        # Angle the bullet sprite
+        bullet.angle = math.degrees(angle)
+
+        #Owner
+        bullet.owner = owner
+
+        # Taking into account the angle, calculate our change_x
+        # and change_y. Velocity is how fast the bullet travels.
+        bullet.change_x = math.cos(angle) * speed
+        bullet.change_y = math.sin(angle) * speed
+        
+        
+        self.bullet_list.append(bullet)
+
+    def update(self,enemy,player):
+        # Get rid of the bullet when it flies off-screen
+        for bullet in self.bullet_list:
+            if bullet.top < 0:
+                bullet.remove_from_sprite_lists()
+                        # Check this bullet to see if it hit a coin
+            if(bullet.owner == """player"""):
+                hit_list = arcade.check_for_collision_with_list(bullet, enemy)
+            else:
+                hit_list = arcade.check_for_collision_with_list(bullet, player)
+
+            # If it did, get rid of the bullet
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+            #self.score += 1 # <-- For every coin we hit, add to the score and remove the coin
+
+            # If the bullet flies off-screen, remove it.
+            if bullet.bottom > SCREEN_HEIGHT:
+                bullet.remove_from_sprite_lists()
+
+        self.bullet_list.update()
+    
+    def draw(self):
+        self.bullet_list.draw()
 
 def main():
     window = Game()
