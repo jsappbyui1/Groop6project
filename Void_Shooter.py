@@ -14,8 +14,8 @@ MOVEMENT_SPEED = 5
 class Game (arcade.Window):
 
     def __init__(self):
-        self.boss = Boss()
         self.bullet = Bullet()
+        self.boss = Boss()
         self.frame_count = 0
 
         # Call parent class and set up the window, probably from the arcade library.
@@ -26,7 +26,7 @@ class Game (arcade.Window):
 
         # variables that hold sprite lists initialization
         self.player_list = None
-        
+        self.boss_sprite = self.boss.boss_sprite
         
         # player info initialization
         self.player_sprite = None
@@ -60,8 +60,10 @@ class Game (arcade.Window):
        
         # Draw all the sprites
         
+        self.bullet.draw()
         self.boss.draw()
         self.player_list.draw()
+        
 
     def on_update(self, detla_time):
         """Movement and game logic"""
@@ -82,8 +84,9 @@ class Game (arcade.Window):
         
         # Call update to move the sprite
         self.player_list.update()
+        self.bullet.update(self.boss_sprite,self.player_sprite)
         self.boss.update(self.frame_count,self.player_sprite)
-        self.bullet.update(self.player_sprite)
+        
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""
@@ -129,7 +132,7 @@ class Player(arcade.Sprite):
 class Boss(arcade.Sprite):
 
     def __init__(self):
-        #self.bullet = Bullet()
+        self.bullet = Bullet()
         self.boss_sprite = None
         self.cycleLen = 100
         self.attackFrame = (self.cycleLen/10)
@@ -153,6 +156,7 @@ class Boss(arcade.Sprite):
         if self.timer % self.attackFrame == 0:
             self.attack(self.attackPattern, self.attackCount)
             self.attackCount += 1
+            print(f"attack {self.attackCount}")
         if self.cycleLen > 100:
             self.cycleLen -= 100
             print(f"cycle lengnth is {self.cycleLen}")
@@ -177,14 +181,14 @@ class Boss(arcade.Sprite):
         choiceList = ['basic','tripple','spray']
         choice = random.choice(choiceList)
         if choice == 'basic':
-            attackList = ["basic attack 1","basic attack 2","basic attack 3","basic attack 4","basic attack 5"
-            ,"basic attack 6","basic attack 7","basic attack 8","basic attack 9","basic attack 10"]
+            attackList = ["basic attack","basic attack","basic attack","basic attack","basic attack"
+            ,"basic attack","basic attack","basic attack","basic attack","basic attack"]
         if choice == 'tripple':
-            attackList = ["tripple attack 1","tripple attack 2","tripple attack 3","tripple attack 4","tripple attack 5"
-            ,"tripple attack 6","tripple attack 7","tripple attack 8","tripple attack 9","tripple attack 10"]
+            attackList = ["tripple attack","tripple attack","tripple attack","tripple attack","tripple attack"
+            ,"tripple attack","tripple attack","tripple attack","tripple attack","tripple attack"]
         if choice == 'spray':
-            attackList = ["spray attack 1","spray attack 2","spray attack 3","spray attack 4","spray attack 5"
-            ,"spray attack 6","spray attack 7","spray attack 8","spray attack 9","spray attack 10"]
+            attackList = ["spray attack","spray attack","spray attack","spray attack","spray attack"
+            ,"spray attack","spray attack","spray attack","spray attack","spray attack"]
         return(attackList)
 
     def chooseLocation(self):
@@ -211,7 +215,20 @@ class Boss(arcade.Sprite):
         self.boss_sprite.draw()
 
     def attack(self, pattern,count):
-        print(self.attackPattern[count])
+        attack = pattern[count]
+        print(attack)
+        if attack == 'basic attack':
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,self.boss_sprite.angle,'badguy',2)
+        if attack == 'tripple attack':
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,self.boss_sprite.angle, 'badguy',2)
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,(self.boss_sprite.angle + .25),'badguy',2)
+            self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,(self.boss_sprite.angle - .25),'badguy',2)
+        if attack == 'spray attack':
+            x = 10
+            while x >= 0:
+                scew = random.uniform(-1, 1)
+                self.bullet.createBullet(self.boss_sprite.center_x, self.boss_sprite.center_y,(self.boss_sprite.angle + scew),'badguy',2)
+                x -= 1
 
 class Bullet(arcade.Sprite):
 
@@ -221,27 +238,35 @@ class Bullet(arcade.Sprite):
     def setup(self):
         self.bullet_list = arcade.SpriteList()
 
-    def createBullet(self,start_x,start_y,angle,speed):
+    def createBullet(self,start_x,start_y,angle,owner,speed):
+
         bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
         bullet.center_x = start_x
         bullet.center_y = start_y
         # Angle the bullet sprite
         bullet.angle = math.degrees(angle)
-        
+
+        #Owner
+        bullet.owner = owner
+
         # Taking into account the angle, calculate our change_x
         # and change_y. Velocity is how fast the bullet travels.
         bullet.change_x = math.cos(angle) * speed
         bullet.change_y = math.sin(angle) * speed
         
+        
         self.bullet_list.append(bullet)
 
-    def update(self,player):
+    def update(self,enemy,player):
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
                         # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, player)
+            if(bullet.owner == """player"""):
+                hit_list = arcade.check_for_collision_with_list(bullet, enemy)
+            else:
+                hit_list = arcade.check_for_collision_with_list(bullet, player)
 
             # If it did, get rid of the bullet
             if len(hit_list) > 0:
@@ -256,8 +281,6 @@ class Bullet(arcade.Sprite):
     
     def draw(self):
         self.bullet_list.draw()
-
-
 
 def main():
     window = Game()
