@@ -9,10 +9,16 @@ class Bullet(arcade.Sprite):
         self.bullet_list = arcade.SpriteList()
 
     def createBullet(self,start_x,start_y,angle,owner):
-
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
+        #Choose which sprite to use
+        if(owner == """player"""):
+            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
+        else:
+            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
+            
+        #set the bullet center
         bullet.center_x = start_x
         bullet.center_y = start_y
+        
         # Angle the bullet sprite
         bullet.angle = math.degrees(angle)
 
