@@ -3,19 +3,25 @@
 import random
 import arcade
 import math
+import os
 
 # Constants
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 SCREEN_TITLE = "Void Shooter"
 
+SPRITE_SCALING_LASER = 0.8
+
 MOVEMENT_SPEED = 5
+BULLET_SPEED = 4
+
 
 class Game (arcade.Window):
 
     def __init__(self):
         self.bullet = Bullet()
         self.boss = Boss()
+        self.bullet = Bullet()
         self.frame_count = 0
 
         # Call parent class and set up the window, probably from the arcade library.
@@ -27,10 +33,14 @@ class Game (arcade.Window):
         # variables that hold sprite lists initialization
         self.player_list = None
         self.boss_sprite = self.boss.boss_sprite
+
         
         # player info initialization
         self.player_sprite = None
         
+        #Sounds
+        self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser1.wav")
+        self.hit_sound = arcade.sound.load_sound(":resources:sounds/phaseJump1.wav")
 
         # Track current state of what key is pressed
         self.left_pressed = False
@@ -46,12 +56,14 @@ class Game (arcade.Window):
         self.player_list = arcade.SpriteList()
         self.bullet.setup()
 
+
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
         self.player_sprite.center_x = 500
         self.player_sprite.center_y = 500
         self.player_list.append(self.player_sprite)
 
         self.boss.settup()
+        self.bullet.setup()
 
     def on_draw(self):
         """Render the Screen"""
@@ -63,7 +75,7 @@ class Game (arcade.Window):
         self.bullet.draw()
         self.boss.draw()
         self.player_list.draw()
-        
+        self.bullet.draw()
 
     def on_update(self, detla_time):
         """Movement and game logic"""
@@ -86,7 +98,7 @@ class Game (arcade.Window):
         self.player_list.update()
         self.bullet.update(self.boss_sprite,self.player_sprite)
         self.boss.update(self.frame_count,self.player_sprite)
-        
+        self.bullet.update(self.enemy_list,self.player_list)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""
@@ -110,6 +122,30 @@ class Game (arcade.Window):
             self.left_pressed = False
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
+            
+    def on_mouse_press(self, x, y, button, modifiers):
+        
+        #Set Owner
+        owner = """player"""
+
+        # Position the bullet at the player's current location
+        start_x = self.player.center_x
+        start_y = self.player.center_y
+
+        # Get from the mouse the destination location for the bullet
+        # IMPORTANT! If you have a scrolling screen, you will also need
+        # to add in self.view_bottom and self.view_left.
+        dest_x = x
+        dest_y = y
+
+        # Do math to calculate how to get the bullet to the destination.
+        # Calculation the angle in radians between the start points
+        # and end points. This is the angle the bullet will travel.
+        x_diff = dest_x - start_x
+        y_diff = dest_y - start_y
+        angle = math.atan2(y_diff, x_diff)
+        
+        self.bullet.createBullet(start_x, start_y, angle, owner)
 
 class Player(arcade.Sprite):
     
