@@ -1,26 +1,14 @@
-# Groop6project
-Bullet Hell Game
-
-Welcome!!
-We have 5 members in our group.  I prepose we each work on a piece of the game like was reccomended. As I see it, here are the pieces we will need:
-
-1: player.  Used to keep track of players health, faceing, position, and velocity.
-<<<<<<< HEAD
-2: Bullet.  Used to make the bullets in the game.  Each bullet would need a location, velocity, size, and damage/special effects
-3: Game.  Keeps track of score, game durration, level, etc.  Might also be the display of the game
-4: Enemey.  Keeps track of enemy position/faceing, movement, and health
-5: Controlls.  The Input/output for the user.  Works closely with player to move the player arround.
-
-Additionaly, we will need to deside what kind of bullet-hell game we want to make.  In class we disccussed an "endless mode" style game that would basicly be a survival thing.  
-=======
-
-2: Bullet.  Used to make the bullets in the game.  Each bullet would need a location, velocity, size, and damage/special effects
-
-3: Game.  Keeps track of score, game durration, level, etc.  Might also be the display of the game
-
-4: Enemey.  Keeps track of enemy position/faceing, movement, and health
-
-5: Controlls.  The Input/output for the user.  Works closely with player to move the player arround.
-
-Additionaly, we will need to deside what kind of bullet-hell game we want to make.  In class we disccussed an "endless mode" style game that would basicly be a survival thing.  
+# Void Shooter
+b) This is a Bullet Hell game where the objective is to dodge a barrage of bullets and survive as long as possible.
+c) Requirements: Python v. 3.9.0
+                 Arcade v. 2.4.3
+d) How to download Arcade for Windows: In command line type this: pip3 install arcade
+e) How to run the game (command line)
+f) Group 6
+   Joshua Sapp:
+   Logan Huston: shadows7590@gmail.com
+   Bryce:
+   Cameron:
+   :
+  
 >>>>>>> 4f20284e811d3e353f8f29f0e862c8c7d0bd6008
