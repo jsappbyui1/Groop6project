@@ -19,7 +19,7 @@ f) Group 6 contact info
    
    Bryce:
    
-   Cameron:
+   Cameron: fri19004@byui.edu
    
    Sean Kirkland: conconcraft@byu.edu
   
