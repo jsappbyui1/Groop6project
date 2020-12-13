@@ -13,7 +13,7 @@ e) How to run the game (command line):
 
 f) Group 6 contact info
    
-   Joshua Sapp:
+   Joshua Sapp: sap19001@byui.edu
    
    Logan Huston: shadows7590@gmail.com
    
