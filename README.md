@@ -9,7 +9,7 @@ c) Requirements: Python v. 3.9.0
 
 d) How to download Arcade for Windows: In command line type this: pip3 install arcade
 
-e) How to run the game (command line):
+e) How to run the game (command line):C:/Program Files/Python37/python.exe" "{path to file}/Void_Shooter.py"
 
 f) Group 6 contact info
    
