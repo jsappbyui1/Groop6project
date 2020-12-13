@@ -21,7 +21,6 @@ class Game (arcade.Window):
     def __init__(self):
         self.bullet = Bullet()
         self.boss = Boss()
-        self.bullet = Bullet()
         self.frame_count = 0
 
         # Call parent class and set up the window, probably from the arcade library.
@@ -55,15 +54,12 @@ class Game (arcade.Window):
         """Call this function to restart the game."""
         self.player_list = arcade.SpriteList()
         self.bullet.setup()
-
+        self.boss.settup()
 
         self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip3_orange.png")
         self.player_sprite.center_x = 500
         self.player_sprite.center_y = 500
         self.player_list.append(self.player_sprite)
-
-        self.boss.settup()
-        self.bullet.setup()
 
     def on_draw(self):
         """Render the Screen"""
@@ -75,9 +71,8 @@ class Game (arcade.Window):
         self.bullet.draw()
         self.boss.draw()
         self.player_list.draw()
-        self.bullet.draw()
 
-    def on_update(self, detla_time):
+    def on_update(self, delta_time):
         """Movement and game logic"""
         # Calculate speed based on keys pressed
         self.frame_count += 1
@@ -98,7 +93,6 @@ class Game (arcade.Window):
         self.player_list.update()
         self.bullet.update(self.boss_sprite,self.player_sprite)
         self.boss.update(self.frame_count,self.player_sprite)
-        self.bullet.update(self.enemy_list,self.player_list)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed"""
