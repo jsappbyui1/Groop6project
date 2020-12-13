@@ -17,7 +17,7 @@ f) Group 6 contact info
    
    Logan Huston: shadows7590@gmail.com
    
-   Bryce:
+   Bryce: ste19003@byui.edu
    
    Cameron: fri19004@byui.edu
    
